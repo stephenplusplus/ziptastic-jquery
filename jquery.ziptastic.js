@@ -12,22 +12,37 @@
 			country = 'US';
 		}
 
+
 		country = country.toUpperCase();
 		// Only make unique requests
 		if(!requests[country]) {
 			requests[country] = {};
 		}
+
+
 		if(!requests[country][zip]) {
-			requests[country][zip] = $.getJSON('http://zip.getziptastic.com/v2/' + country + '/' + zip);
+
+			requests[country][zip] = $.ajax({
+				url: 'http://127.0.0.1:8321/v3/' + country + '/' + zip,
+				headers: {'x-referrer': 'http://ford.com', 'x-key': 'ac2218f205e94e0647210b3927f94f4a213e6ff3' },
+				contentType: "application/json",
+				type: 'GET',
+				dataType: 'json',
+				// success: function(data) { console.log(data); requests[country][zip] = data[0]; },
+				error: function(e) { alert('There was an error. ' + e.message ); }
+			});
+
+
+			// Bind to the finished request
+			requests[country][zip].done(function(data) {
+
+				if (typeof callback == 'function') {
+					var key = Object.keys(data)[0];
+					requests[country][zip] = data[key];
+					callback(data[key].country, data[key].state, data[key].state_short, data[key].city, zip);
+				}
+			});
 		}
-
-		// Bind to the finished request
-		requests[country][zip].done(function(data) {
-			if (typeof callback == 'function') {
-				callback(data.country, data.state, data.state_short, data.city, zip);
-			}
-		});
-
 		// Allow for binding to the deferred object
 		return requests[country][zip];
 	};
