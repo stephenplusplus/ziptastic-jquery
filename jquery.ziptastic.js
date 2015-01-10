@@ -37,9 +37,11 @@
 			requests[country][zip].done(function(data) {
 
 				if (typeof callback == 'function') {
-					var key = Object.keys(data)[0];
-					requests[country][zip] = data[key];
-					callback(data[key].country, data[key].state, data[key].state_short, data[key].city, zip);
+					var data_temp = data[0]
+					var key = Object.keys(data_temp)[0];
+
+					requests[country][zip] = data_temp[key];
+					callback(data_temp[key].country, data_temp[key].state, data_temp[key].state_short, data_temp[key].city, zip);
 				}
 			});
 		}
