@@ -37,7 +37,7 @@
 			requests[country][zip].done(function(data) {
 
 				if (typeof callback == 'function') {
-					var data_temp = data[0]
+					var data_temp = data
 					var key = Object.keys(data_temp)[0];
 
 					requests[country][zip] = data_temp[key];
